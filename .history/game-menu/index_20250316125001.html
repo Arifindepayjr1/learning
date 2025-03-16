@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menu</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <!-- Original Main Menu -->
+    <div class="main-menu" id="mainMenu">
+        <h1 id="title">TREYVISAI</h1> 
+        <h2 class="game-menu" onclick="startNewGame()">New Game</h2>
+        <h2 class="game-menu" onclick="changeText(this)">Continue</h2> 
+        <h2 class="game-menu" onclick="changeText(this)">Exit</h2>
+    </div>
+    
+    <!-- New Game Menu (hidden initially) -->
+    <div id="newGameMenu" class="main-menu" style="display:none;">
+        <h2 class="game-menu" onclick="changeText(this)">Play</h2>
+        <h2 class="game-menu" onclick="changeText(this)">Options</h2>
+        <h2 class="game-menu" onclick="changeText(this)">Credits</h2>
+        <h2 class="game-menu" onclick="exitGame()">Exit</h2>
+    </div>
+
+    <p id="version">V 1.0.0</p>
+
+    <!-- Link to the external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>

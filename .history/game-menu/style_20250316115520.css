@@ -1,0 +1,24 @@
+@font-face
+{
+    font-family: "Morris Roman";
+    src: url("../game-menu/assets/fonts/MorrisRomanAlternate-Black.ttf") format('truetype'),
+         url("../game-menu/assets/")
+}
+
+
+
+body {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.main-menu {
+    height: 100vh; 
+    background-image: url("../game-menu/assets/Art.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+}

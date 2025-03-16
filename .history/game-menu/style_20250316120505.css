@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel&display=swap');
+body 
+{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 100vh; 
+    background-image: url("../game-menu/assets/Art.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+}
+#title 
+{
+    color: white;
+    font-family: "Cinzel";
+    font-size: 350%;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    letter-spacing: 0.2em;
+    font-weight: bold;
+    padding: 40px;
+}
+

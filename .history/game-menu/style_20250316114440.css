@@ -1,0 +1,14 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.main-menu {
+    height: 100vh; /* Full viewport height */
+    background-image: url("Art.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+}

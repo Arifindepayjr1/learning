@@ -1,0 +1,11 @@
+body 
+{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    background-color: ;
+}
+.main-menu
+{
+    background-image: url(Art.gif) no-repeat center center fixed;
+}

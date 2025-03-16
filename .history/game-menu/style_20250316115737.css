@@ -1,0 +1,21 @@
+@font-face
+{
+    font-family: "Morris Roman";
+    src: url("../game-menu/assets/fonts/MorrisRomanAlternate-Black.ttf") format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+body 
+{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Morris Roman" fantasy;
+}
+
+.main-menu 
+{
+   
+}

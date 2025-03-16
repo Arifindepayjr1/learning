@@ -1,0 +1,15 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.main-menu {
+    height: 100vh; 
+    background-image: url("../");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+}
