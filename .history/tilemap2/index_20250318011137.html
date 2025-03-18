@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Mage City Map - Walls and Grass (Array)</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="2560" height="2560"></canvas> <!-- 80x80 tiles at 32x32 pixels -->
+    <script>
+        // Get the canvas and context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set a background color to ensure the canvas is visible
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Constants
+        const TILE_SIZE = 32; // Each tile is 32x32 pixels
+        const MAP_WIDTH = 80; // 80 tiles wide
+        const MAP_HEIGHT = 80; // 80 tiles tall
+
+        // Load the tileset
+        const tileset = new Image();
+        tileset.src = 'MageCityArcanos.png'; // Adjust to the actual file name if different
+
+        // Map data (80x80 grid with walls and grass, generated as a 2D array)
+        // 0 = Grass, 13 = WallwithLittlePlant, 17 = White-Wall, 19 = Plant-Wall, 20 = Brown-Wall
+        const map = Array(MAP_HEIGHT).fill().map((_, y) => {
+            const row = Array(MAP_WIDTH).fill(0); // Default to Grass
+            if (y === 0 || y === MAP_HEIGHT - 1) { // Top and bottom rows
+                for (let x = 0; x < MAP_WIDTH; x += 3) {
+                    if (x + 2 < MAP_WIDTH) {
+                        const wallType = x % 6 === 0 ? 17 : 20; // Alternate White-Wall and Brown-Wall
+                        row[x] = wallType;
+                        row[x + 1] = wallType;
+                        row[x + 2] = wallType;
+                    }
+                }
+                // Add WallwithLittlePlant at intervals
+                for (let x = 6; x < MAP_WIDTH - 6; x += 12) {
+                    row[x] = 13;
+                }
+            } else if (y === 1 || y === MAP_HEIGHT - 2) { // Rows just inside top and bottom
+                row[0] = 19; // Plant-Wall on left
+                row[1] = 19;
+                row[MAP_WIDTH - 2] = 19; // Plant-Wall on right
+                row[MAP_WIDTH - 1] = 19;
+                for (let x = 6; x < MAP_WIDTH - 6; x += 12) {
+                    row[x] = 13; // WallwithLittlePlant
+                }
+            } else if (y % 2 === 0 && y > 1 && y < MAP_HEIGHT - 2) { // Every other row for Plant-Wall sides
+                row[0] = 19; // Plant-Wall on left
+                row[1] = 19;
+                row[MAP_WIDTH - 2] = 19; // Plant-Wall on right
+                row[MAP_WIDTH - 1] = 19;
+            }
+            return row;
+        });
+
+        // Tile positions in the tileset (including all your provided tiles for future use)
+        const tilePositions = {
+            0: { x: 0, y: 0, width: TILE_SIZE, height: TILE_SIZE },    // Grass
+            1: { x: 32, y: 0, width: TILE_SIZE, height: TILE_SIZE },   // White Floor
+            2: { x: 64, y: 0, width: TILE_SIZE, height: TILE_SIZE },   // Flower(1)
+            3: { x: 96, y: 0, width: TILE_SIZE, height: TILE_SIZE },   // Flower(2)
+            4: { x: 128, y: 0, width: TILE_SIZE, height: TILE_SIZE },  // Flower(3)
+            5: { x: 160, y: 0, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 160, y: 0 }, { x: 192, y: 0 }, { x: 160, y: 32 }, { x: 192, y: 32 }
+            ]}, // Table (2x2)
+            6: { x: 224, y: 0, width: TILE_SIZE, height: TILE_SIZE },  // Chair
+            7: { x: 224, y: 32, width: TILE_SIZE, height: TILE_SIZE }, // Chair(1)
+            8: { x: 32, y: 64, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 32, y: 64 }, { x: 64, y: 64 }, { x: 32, y: 96 }, { x: 64, y: 96 }
+            ]}, // Flower-Barrel (2x2)
+            9: { x: 96, y: 64, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 96, y: 64 }, { x: 96, y: 96 }
+            ]}, // Flower-Barrel(1) (2x1)
+            10: { x: 128, y: 64, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 128, y: 64 }, { x: 128, y: 96 }
+            ]}, // Barrel (1x2)
+            11: { x: 160, y: 64, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 160, y: 64 }, { x: 160, y: 96 }
+            ]}, // Wall-Foundation (1x2)
+            12: { x: 192, y: 64, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 192, y: 64 }, { x: 224, y: 64 }, { x: 192, y: 96 }, { x: 224, y: 96 }
+            ]}, // Foundation (2x2)
+            13: { x: 128, y: 192, width: TILE_SIZE, height: TILE_SIZE }, // WallwithLittlePlant
+            14: { x: 32, y: 384, width: TILE_SIZE, height: TILE_SIZE },  // GoldItem
+            15: { x: 0, y: 544, width: TILE_SIZE, height: TILE_SIZE },   // GoldenStuff
+            16: { x: 0, y: 576, width: TILE_SIZE, height: TILE_SIZE },   // HeadSculpture
+            17: { x: 0, y: 128, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 0, y: 128 }, { x: 32, y: 128 }, { x: 64, y: 128 }
+            ]}, // White-Wall (3x1)
+            18: { x: 96, y: 128, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 96, y: 128 }, { x: 128, y: 128 }, { x: 160, y: 128 }
+            ]}, // BrownWhite-Wall (3x1)
+            19: { x: 192, y: 128, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 192, y: 128 }, { x: 224, y: 128 }, { x: 192, y: 160 }, { x: 224, y: 160 }
+            ]}, // Plant-Wall (2x2)
+            20: { x: 0, y: 160, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 0, y: 160 }, { x: 32, y: 160 }, { x: 64, y: 160 }
+            ]}, // Brown-Wall (3x1)
+            21: { x: 96, y: 160, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 96, y: 160 }, { x: 128, y: 160 }, { x: 160, y: 160 }
+            ]}, // BrownWhiteWallWithPlant (3x1)
+            22: { x: 0, y: 192, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 0, y: 192 }, { x: 32, y: 192 }, { x: 64, y: 192 },
+                { x: 0, y: 224 }, { x: 32, y: 224 }, { x: 64, y: 224 }
+            ]}, // River (3x2)
+            23: { x: 96, y: 192, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 96, y: 192 }, { x: 96, y: 224 }
+            ]}, // River-2Tile (1x2)
+            24: { x: 128, y: 224, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 128, y: 224 }, { x: 160, y: 224 }, { x: 192, y: 224 },
+                { x: 128, y: 256 }, { x: 160, y: 256 }, { x: 192, y: 256 }
+            ]}, // Big-Stair (3x2)
+            25: { x: 224, y: 224, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 224, y: 224 }, { x: 224, y: 256 }
+            ]}, // Small-Stair (1x2)
+            26: { x: 0, y: 288, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 0, y: 288 }, { x: 32, y: 288 }, { x: 64, y: 288 },
+                { x: 0, y: 320 }, { x: 32, y: 320 }, { x: 64, y: 320 },
+                { x: 0, y: 352 }, { x: 32, y: 352 }, { x: 64, y: 352 }
+            ]}, // RockFloorBig (3x3)
+            27: { x: 96, y: 288, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 96, y: 288 }, { x: 128, y: 288 }, { x: 96, y: 320 }, { x: 128, y: 320 }
+            ]}, // RockFloorSmall (2x2)
+            28: { x: 0, y: 384, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 0, y: 384 }, { x: 0, y: 416 }, { x: 0, y: 448 }
+            ]}, // NewbornTree (1x3)
+            29: { x: 32, y: 416, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 32, y: 416 }, { x: 32, y: 448 }
+            ]}, // None-Sculpture (1x2)
+            30: { x: 64, y: 384, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 64, y: 384 }, { x: 64, y: 416 }, { x: 64, y: 448 }
+            ]}, // Sculpture (1x3)
+            31: { x: 0, y: 480, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 0, y: 480 }, { x: 32, y: 480 }, { x: 0, y: 512 }, { x: 32, y: 512 }
+            ]}, // Public-Chair (2x2)
+            32: { x: 64, y: 480, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 64, y: 480 }, { x: 96, y: 480 }, { x: 64, y: 512 }, { x: 96, y: 512 },
+                { x: 64, y: 544 }, { x: 96, y: 544 }, { x: 64, y: 576 }, { x: 96, y: 576 }
+            ]}, // ChildTree (2x4)
+            33: { x: 32, y: 544, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 32, y: 544 }, { x: 32, y: 576 }
+            ]}, // No-Head-Sculpture (1x2)
+            34: { x: 128, y: 448, width: TILE_SIZE, height: TILE_SIZE, parts: [
+                { x: 128, y: 448 }, { x: 160, y: 448 }, { x: 192, y: 448 }, { x: 224, y: 448 },
+                { x: 128, y: 480 }, { x: 160, y: 480 }, { x: 192, y: 480 }, { x: 224, y: 480 },
+                { x: 128, y: 512 }, { x: 160, y: 512 }, { x: 192, y: 512 }, { x: 224, y: 512 },
+                { x: 128, y: 544 }, { x: 160, y: 544 }, { x: 192, y: 544 }, { x: 224, y: 544 }
+            ]} // Tree (4x4)
+        };
+
+        // Render the map
+        function drawMap() {
+            console.log('Drawing map...');
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    const tile = map[y][x];
+                    const pos = tilePositions[tile];
+
+                    if (pos && pos.parts) {
+                        // Multi-tile object (combine parts)
+                        pos.parts.forEach((part, index) => {
+                            const width = pos.parts.length === 16 ? 4 : pos.parts.length === 9 || pos.parts.length === 6 ? 3 : pos.parts.length === 8 || pos.parts.length === 4 ? 2 : 1;
+                            const height = pos.parts.length === 16 ? 4 : pos.parts.length === 9 || pos.parts.length === 6 ? 3 : pos.parts.length === 8 ? 4 : pos.parts.length === 3 ? 1 : 2;
+                            const partX = x * TILE_SIZE + (index % width) * TILE_SIZE;
+                            const partY = y * TILE_SIZE + Math.floor(index / width) * TILE_SIZE;
+                            ctx.drawImage(
+                                tileset,
+                                part.x, part.y, TILE_SIZE, TILE_SIZE,
+                                partX, partY, TILE_SIZE, TILE_SIZE
+                            );
+                        });
+                        // Skip additional spaces for multi-tile objects
+                        if (pos.parts.length === 16) x += 3; // 4x4 (tree)
+                        else if (pos.parts.length === 9 || pos.parts.length === 6) x += 2; // 3x3 (rockFloorBig), 3x2 (river, big-stair)
+                        else if (pos.parts.length === 8) x += 1; // 2x4 (childTree)
+                        else if (pos.parts.length === 4) x += 1; // 2x2 (plant-wall)
+                        else if (pos.parts.length === 3) x += 2; // 3x1 (white-wall, brown-wall)
+                    } else if (pos) {
+                        // Single tile
+                        ctx.drawImage(
+                            tileset,
+                            pos.x, pos.y, pos.width, pos.height,
+                            x * TILE_SIZE, y * TILE_SIZE, pos.width, pos.height
+                        );
+                    }
+                }
+            }
+            console.log('Map drawn.');
+        }
+
+        // Handle image loading and errors
+        tileset.onload = () => {
+            console.log('Tileset loaded successfully.');
+            drawMap();
+        };
+
+        tileset.onerror = () => {
+            console.log('Error loading tileset. Check the file name or path.');
+        };
+    </script>
+</body>
+</html>

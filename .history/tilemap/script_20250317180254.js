@@ -1,0 +1,7 @@
+const CANVAS = document.getElementById("my-canvas");
+CANVAS.style.backGroundColor = "blue";
+CTX.fillStyle = "black";
+const CTX = CANVAS.getContext('2d');
+CTX.fillRect(100 , 100 ,CANVAS.width , CANVAS.height);
+
+console.log("javascript");

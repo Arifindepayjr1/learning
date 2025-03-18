@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Tilemaps </title>
+    <style>
+        *
+        {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #control
+        {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+        canvas
+        {
+            background-color: blue;
+            position: relative;
+            left: 50%;
+            translate: -50% 0;
+            width: 320px;
+            height: 320px;
+        }
+        #control > button
+        {
+            padding: 5px 8px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <canvas id="my-canvas"> </canvas>
+    <script src="script.js"></script>
+</body>
+</html>
