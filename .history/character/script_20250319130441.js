@@ -1,0 +1,2 @@
+const SPRITE_WIDTH  = 13;
+const SPRITE_HEIGHT = 31; 

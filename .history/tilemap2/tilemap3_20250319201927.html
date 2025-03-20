@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiled Map Renderer with Character - Tilemap1</title>
+    <title>Tiled Map Renderer with Character - Tilemap3</title>
     <style>
         canvas {
             border: 1px solid white;
@@ -23,31 +23,31 @@
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false; // Disable smoothing for crisp scaling
 
-        // Tile size (scaled to 32x32 pixels)
+        // Tile size (scaled to 32x32 pixels to match tilemap1)
         const TILE_SIZE = 32;
 
-        // Base map data (20 rows x 30 columns) - Updated rawMap
+        // Raw map data (tilemap3)
         const rawMap = [
-            [77/*C*//*out of map */, 77/*C*/, 77/*C*/, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 8/*C*/, 5/*C*/, 5/*C*/, 5/*C*/, 5/*C*/, 8/*C*/, 12, 21/*C*/, '12/*itemID41*/'/*C*/, '12/*itemID42*/'/*C*/, '12/*itemID42*/'/*C*/, '12/*itemID43*/'/*C*/, 12, 13, 13],
-            [77/*C*/, 77/*C*/, 2/*C*/, 1/*C*/, 1/*C*/, 1/*C*/, 2/*C*/, 12, 12, 12, 12, 12, 12, 12, 12, 6/*C*/, 57/*C*/, 0, '0/*itemID56*/'/*C*/, '0/*itemID45*/'/*C*/, 6/*C*/, 12, 21/*C*/, 16/*C*/, 16/*C*/, 16/*C*/, 16/*C*/, 12, 13, 13],
-            [12, 12, 2/*C*/, 18, 18, 18, 2/*C*/, 21/*C*/, 12, 12, 12, 12, 12, 12, 12, 6/*C*/, 0, 0, 0, 54/*C*/, 6/*C*/, 12, 21, 16, 51/*transform to tilemap2*/, 16, 16/*C*/, 12/*C*/, 13, 12], 
-            [77/*C*/, 12, 2/*C*/, 18, 36/*C*/, 18, 2/*C*/, 12, 21/*C*/, 12, 12, 12, 12, 12, 12, 5/*C*/, 5/*C*/, 0, 5/*C*/, 5/*C*/, 5/*C*/, 12, 12, 21/*C*/, 19/*character spawn back after coming from tilemap2*/, 13, 59, 12, 12, 12], 
-            [77/*C*/, 12, 2/*C*/, 18, 18, 18, 2/*C*/, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
-            [12, 12, 1/*C*/, 1/*C*/, 18, 1/*C*/, 1/*C*/, 13, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
-            [12, 12, 12, 12, 11, 12, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12],
-            [12, 12, 12, 12, 11, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12/*C*/],
-            [60/*C*/, 60/*C*/, 60/*C*/, 12, 11, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, '12/*itemID42*/', '12/*itemID42*/', '12/*itemID25*/'/*C*/, '12/*itemID26*/'/*C*/],
-            [60/*C*/, 13, 13, 11, 11, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 31/*C*/, 12, 12, '12/*itemID35*/'/*C*/, 12/*C*/, 12/*C*/, 12/*C*/, 12/*C*/],
-            [60/*C*/, 13, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,'11/*itemID48*/'/*C*/, 11, 11, 11, 11, 11, 11, 12, 12, 12, '12/*itemID35*/', 12/*C*/, 12/*C*/, 12/*C*/, 12/*C*/],
-            [60/*C*/, 60/*C*/, 60/*C*/, 12, 11, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 31/*C*/, 31/*C*/, 12, 12, '12/*itemID43*/', 12/*C*/, 12/*C*/, 12/*C*/, 12/*C*/],
-            [21/*C*/, 12, 12, 12, 11, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, '12/*itemID25*/'/*C*/, '12/*itemID26*/'/*C*/, '12/*itemID26*/'/*C*/, 12/*C*/, 12/*C*/, 12/*C*/, 12/*C*/],
-            [12, 12, 12, 12, 11, 12, 12, 13, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, '12/*itemID25*/'/*C*/, '12/*itemID35*/'/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/],
-            [12, 12, 12, 12, 11, 12, 12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 12, 12, '12/*itemID41*/'/*C*/, '12/*itemID43*/', 22/*C*/, '12/*itemID33*/'/*C*/, '12/*itemID43*/'/*C*/, 12/*C*/, 12/*C*/, 12/*C*/],
-            [11/*also out of map *//*SPAWN HERE*/, 11, 11, 11, 11, 12, 12, 12, 12, '22/*itemID25*/'/*C*/, '22/*itemID26*/', '22/*itemID27*/'/*C*/, '12/*itemID42*/', '12/*itemID42*/', 11, '11/*itemID42*/', '11/*itemID42*/', '11/*itemID42*/', '11/*itemID42*/', '12/*itemID42*/', '12/*itemID42*/', '31/*itemID42*/'/*C*/, '16/*itemID42*/'/*C*/, '16/*itemID43*/'/*C*/, '22/*itemID33*/'/*C*/, '16/*itemID33*/'/*C*/, 16/*C*/, 12/*C*/, 12/*C*/, 21/*C*/],
-            [12, 12, 12, 12, 12, 12, 12, 12, 12, '22/*itemID33*/'/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 11, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, 22/*C*/, '22/*itemID43*/'/*C*/, 12, '12/*itemID35*/', 12/*C*/, 12/*C*/, 31/*C*/],
-            [12, 12, 12, 12, 12, 12, 12, 12, 12, '22/*itemID41*/'/*C*/, '22/*itemID42*/'/*C*/, '22/*itemID42*/'/*C*/, '22/*itemID43*/'/*C*/, 12, 11, '12/*itemID26*/', '12/*itemID26*/', '12/*itemID26*/', 31/*C*/, 31/*C*/, 31/*C*/, 31/*C*/, 31/*C*/, '12/*itemID26*/', '12/*itemID26*/', 12, '12/*itemID35*/', 12/*C*/, 12/*C*/, 21/*C*/],
-            [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 11, 12, 12, 12, 12, 31/*C*/, 31/*C*/, 31/*C*/, 31/*C*/, 12, 12, 12, '12/*itemID35*/', 12/*C*/, 12/*C*/, 12/*C*/],
-            [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12/*cleared*/, 12, 12, 12, 51/*transform to tilemap3*/, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, '16/*itemID27*/'/*C*/, 21/*C*/, 12/*C*/]
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 16, 16, 16, 16, 16, 16,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 16, 16, 16, 16, 16, 16,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 16, 16, 16, 16, 16, 16,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 16, 16, 16, 16, 16, 16, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, '15/*itemID37*/', 15, 15, 15, 15, '15/*itemID37*/', 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15, 15, 15, 15, 15, 15, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 4, 1, 1, 1, 1, 1, 1, 4, 23, 23, 23, 23, 23, 23, 15, 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 1, 1, '15/*itemID61*/', 15, 15, 15, 15, 15, 2, 23, 23, 23, 23, 23, 23, 15, 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 15, 15/*transform from map 1*/, 15, 15, 15, 15, 15, 15, 2, 23, 23, 23, 23, 23, 23, 15, 15, 23, 23, 23, 23, 23, 23, 16, 16, 16, 16, 16,
+            23, 23, 1, 1, '15/*itemID61*/', 15, 15, 15, 15, 15, 2, 16, 16, 16, 16, 16, 16, 15, 15, 16, 16, 16, 16, 23, 23, 15, 15, 15, 15, 15,
+            23, 23, 23, 2, 15, 15, 15, 15, 15, 15, 3, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 23, 23, 15, 15, 15, 15, 15,
+            23, 23, 23, 2, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            23, 23, 23, 2, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 16, 16, 23, 23, 23, 23, 23,
+            23, 23, 23, 2, 15, 15, 15, 15, 15, 15, 2, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 3, 1, 1, 1, 1, 1, 1, 3, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15, 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15, 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23
         ];
 
         // Preprocess the map to separate base tiles and overlay items
@@ -56,27 +56,28 @@
         const secondOverlayLayer = Array(20).fill().map(() => Array(30).fill(null));
         const commentRegex = /(\d+)\/\*itemID(\d+)\*/i;
 
-        for (let row = 0; row < rawMap.length; row++) {
-            for (let col = 0; col < rawMap[row].length; col++) {
-                const tile = rawMap[row][col];
-                if (typeof tile === 'string' && commentRegex.test(tile)) {
-                    const [, baseId, itemId] = tile.match(commentRegex);
-                    map[row][col] = parseInt(baseId);
-                    overlayLayer[row][col] = parseInt(itemId);
-                } else {
-                    map[row][col] = tile;
-                }
-                if (map[row][col] === 22) {
-                    secondOverlayLayer[row][col] = 38;
-                }
+        for (let i = 0; i < rawMap.length; i++) {
+            const row = Math.floor(i / 30);
+            const col = i % 30;
+            const tile = rawMap[i];
+            
+            if (typeof tile === 'string' && commentRegex.test(tile)) {
+                const [, baseId, itemId] = tile.match(commentRegex);
+                map[row][col] = parseInt(baseId);
+                overlayLayer[row][col] = parseInt(itemId);
+            } else {
+                map[row][col] = tile;
+            }
+            if (map[row][col] === 22) {
+                secondOverlayLayer[row][col] = 38;
             }
         }
 
         // Load tileset
         const tileset = new Image();
-        tileset.src = '222.png'; // Adjust path if needed
+        tileset.src = 'hero.png';
 
-        // Tile position mapping
+        // Tile position mapping (same as tilemap1)
         const tilePositions = {
             12: { x: 48, y: 16 }, 11: { x: 32, y: 16 }, 18: { x: 16, y: 32 }, 22: { x: 80, y: 32 },
             0: { x: 0, y: 16 }, 5: { x: 64, y: 0 }, 8: { x: 112, y: 0 }, 6: { x: 80, y: 0 },
@@ -109,10 +110,11 @@
         let transitionFadeIn = false;
         let transitionTarget = null;
 
-        // Draw the map (without character)
+        // Function to draw the map
         function drawMap() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const grassPos = tilePositions[12]; // Use tile 12 as the base grass layer (original setup)
+            const grassPos = tilePositions[15]; // Use tile 15 as the base grass layer for tilemap3
+
             // Draw grass layer (rows 0-19)
             for (let row = 0; row < 20; row++) {
                 for (let col = 0; col < 30; col++) {
@@ -125,12 +127,13 @@
                     );
                 }
             }
+
             // Draw base tiles (rows 0-19)
             for (let row = 0; row < map.length; row++) {
                 for (let col = 0; col < map[row].length; col++) {
                     const tileId = map[row][col];
                     const tilePos = tilePositions[tileId];
-                    if (tilePos && tileId !== 12) { // Skip the base grass layer
+                    if (tilePos && tileId !== 15) { // Skip the base grass layer
                         ctx.drawImage(
                             tileset,
                             tilePos.x, tilePos.y,
@@ -141,6 +144,7 @@
                     }
                 }
             }
+
             // Draw overlay layer (rows 0-19)
             for (let row = 0; row < overlayLayer.length; row++) {
                 for (let col = 0; col < overlayLayer[row].length; col++) {
@@ -151,12 +155,13 @@
                             tileset,
                             tilePos.x, tilePos.y,
                             16, 16,
-                            col * TILE_SIZE, row * TILE_SIZE,
+                            col * TILE_SIZE, row * TITLE_SIZE,
                             TILE_SIZE, TILE_SIZE
                         );
                     }
                 }
             }
+
             // Draw second overlay layer (rows 0-19)
             for (let row = 0; row < secondOverlayLayer.length; row++) {
                 for (let col = 0; col < secondOverlayLayer[row].length; col++) {
@@ -192,7 +197,7 @@
         window.transitionAlpha = transitionAlpha;
         window.transitionFadeIn = transitionFadeIn;
         window.transitionTarget = transitionTarget;
-        window.currentMap = 'tilemap1';
+        window.currentMap = 'tilemap3';
 
         tileset.onload = () => {
             console.log('Tileset loaded');
@@ -202,6 +207,8 @@
             characterScript.src = 'character.js';
             document.body.appendChild(characterScript);
         };
+
+        tileset.onerror = () => console.error('Failed to load tileset image');
     </script>
 </body>
 </html>
